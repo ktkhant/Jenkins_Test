@@ -33,7 +33,7 @@ pipeline {
                 }
             }
             steps {
-                bat 'python3 app.py'
+                bat 'python app.py'
             }
         }
     }
