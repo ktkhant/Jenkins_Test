@@ -1,35 +1,40 @@
 pipeline {
     agent any
+    triggers {
+        githubPush()  // Triggered by GitHub webhook
+    }
     stages {
-        stage('Clone') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/ktkhant/Jenkins_Test.git'
+                git url: 'https://github.com/<your-username>/<your-repo>.git', branch: 'main'
             }
         }
-        stage('Build') {
+        stage('Check for app.py Changes') {
             steps {
-                echo 'Building...'
+                script {
+                    def changes = sh(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
+                    if (changes.contains("app.py")) {
+                        echo "app.py has changed. Proceeding with build..."
+                    } else {
+                        echo "No changes in app.py. Skipping build."
+                        currentBuild.result = 'SUCCESS'
+                        // Exit early
+                        return
+                    }
+                }
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
+        stage('Run app.py') {
+            when {
+                expression {
+                    // Only run if app.py changed
+                    def changes = sh(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
+                    return changes.contains("app.py")
+                }
             }
-        }
-        stage('Deploy') {
             steps {
-                echo 'Deploying...'
+                sh 'python3 app.py'
             }
         }
     }
-
-    post {
-	 success { 
-		echo "pipeline done"
-	 }
-	 failure {
-		echo "pipeline failed"
-	}
-	
-	}
 }
