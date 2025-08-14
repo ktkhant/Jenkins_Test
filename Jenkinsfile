@@ -12,7 +12,7 @@ pipeline {
         stage('Check for app.py Changes') {
             steps {
                 script {
-                    def changes = sh(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
+                    def changes = bat(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
                     if (changes.contains("app.py")) {
                         echo "app.py has changed. Proceeding with build..."
                     } else {
@@ -28,12 +28,12 @@ pipeline {
             when {
                 expression {
                     // Only run if app.py changed
-                    def changes = sh(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
+                    def changes = bat(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
                     return changes.contains("app.py")
                 }
             }
             steps {
-                sh 'python3 app.py'
+                bat 'python3 app.py'
             }
         }
     }
