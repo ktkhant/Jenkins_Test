@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         VENV_DIR = 'venv'
-        PYTHON_PATH = 'python' // Adjust if needed, e.g., 'python3.9'
+        PYTHON_PATH = 'C:\Users\ktkhant\AppData\Local\Programs\Python\Python313\python.exe' 
     }
     stages {
         stage('Checkout') {
