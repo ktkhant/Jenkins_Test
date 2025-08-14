@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+    options {
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
     triggers {
         githubPush()  // Triggered by GitHub webhook
     }
